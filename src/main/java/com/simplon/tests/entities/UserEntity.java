@@ -1,5 +1,6 @@
 package com.simplon.tests.entities;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -68,7 +69,7 @@ public class UserEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return new ArrayList<>();
         // throw new UnsupportedOperationException("Unimplemented method
         // 'getAuthorities'");
     }
