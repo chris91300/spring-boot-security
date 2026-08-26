@@ -1,0 +1,21 @@
+info:
+  name: POST login
+  type: http
+
+http:
+  method: POST
+  url: http://localhost:8080/api/auth/login
+  body:
+    type: json
+    data: |-
+      {
+        "email": "christophe@simplon.co",
+        "password": "motdepasse"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
