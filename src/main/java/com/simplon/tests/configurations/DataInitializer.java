@@ -3,6 +3,8 @@ package com.simplon.tests.configurations;
 import org.springframework.stereotype.Component;
 
 import com.simplon.tests.entities.BookEntity;
+import com.simplon.tests.entities.RoleEntity;
+import com.simplon.tests.repositories.RoleRepository;
 import com.simplon.tests.services.BookService;
 
 import java.util.List;
@@ -10,11 +12,13 @@ import java.util.List;
 import org.springframework.boot.CommandLineRunner;
 
 @Component
-public class Books implements CommandLineRunner {
+public class DataInitializer implements CommandLineRunner {
 
     private BookService bookService;
+    private final RoleRepository roleRepository;
 
-    public Books(BookService bookserviceInjected) {
+    public DataInitializer(BookService bookserviceInjected, RoleRepository roleRepositoryInjected) {
+        this.roleRepository = roleRepositoryInjected;
         this.bookService = bookserviceInjected;
     }
 
@@ -39,5 +43,13 @@ public class Books implements CommandLineRunner {
             this.bookService.save(book1);
             this.bookService.save(book2);
         }
+
+        RoleEntity roleUser = new RoleEntity();
+        roleUser.setAuthority("ROLE_USER");
+        roleRepository.save(roleUser);
+
+        RoleEntity roleAdmin = new RoleEntity();
+        roleAdmin.setAuthority("ROLE_ADMIN");
+        roleRepository.save(roleAdmin);
     }
 }

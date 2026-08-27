@@ -1,0 +1,26 @@
+info:
+  name: create book
+  type: http
+
+http:
+  method: POST
+  url: http://localhost:8080/api/books
+  body:
+    type: json
+    data: |-
+      {
+          "title": "La bible",
+          "author": "Jesus & co",
+          "category": "sciences fictions",
+          "yearOfPublication": "0",
+          "copiesAvailable": "1"
+        }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoiY2hyaXN0b3BoZS51c2VyQHNpbXBsb24uY28iLCJleHAiOjE3ODc4MjI3MTEsImlhdCI6MTc4NzgxOTExMSwic2NvcGUiOiJST0xFX1VTRVIgRkFDVE9SX1BBU1NXT1JEIn0.yHmfO2v_4fjJSCMOPmEXj2UMplqfgm80inQl3N8s2Bc
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
