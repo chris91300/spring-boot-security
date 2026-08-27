@@ -1,5 +1,17 @@
-{"properties": [{
-  "name": "jwt.secret",
-  "type": "java.lang.String",
-  "description": "A description for 'jwt.secret'"
-}]}
+{"properties": [
+  {
+    "name": "jwt.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'jwt.secret'"
+  },
+  {
+    "name": "frontend.react.url",
+    "type": "java.lang.String",
+    "description": "A description for 'frontend.react.url'"
+  },
+  {
+    "name": "frontend.angular.url",
+    "type": "java.lang.String",
+    "description": "A description for 'frontend.angular.url'"
+  }
+]}
