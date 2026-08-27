@@ -1,6 +1,7 @@
 info:
   name: POST login
   type: http
+  seq: 1
 
 http:
   method: POST
@@ -9,7 +10,7 @@ http:
     type: json
     data: |-
       {
-        "email": "christophe@simplon.co",
+        "email": "christophe.user@simplon.co",
         "password": "motdepasse"
       }
   auth: inherit
@@ -19,3 +20,4 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+​

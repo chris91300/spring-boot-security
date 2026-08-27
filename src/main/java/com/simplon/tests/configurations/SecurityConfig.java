@@ -3,6 +3,8 @@ package com.simplon.tests.configurations;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -53,7 +55,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Accessible sans authentification
                         .requestMatchers("/api/auth/**", "/error").permitAll()
-                        // Authentification requise pour tout le reste
                         .anyRequest().authenticated())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
@@ -71,5 +72,10 @@ public class SecurityConfig {
     public JwtDecoder jwtDecoder() {
         var originalKey = new SecretKeySpec(jwtSecret.getBytes(), "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(originalKey).build();
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.fromHierarchy("SCOPE_ROLE_ADMIN > SCOPE_ROLE_USER");
     }
 }

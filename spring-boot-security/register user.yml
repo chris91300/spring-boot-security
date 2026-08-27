@@ -1,5 +1,5 @@
 info:
-  name: POST register user
+  name: register user
   type: http
 
 http:
@@ -10,8 +10,11 @@ http:
     data: |-
       {
         "name" : "christophe",
-        "email" : "christophe@simplon.co",
-        "password" : "motdepasse"
+        "email" : "christophe.user@simplon.co",
+        "password" : "motdepasse",
+        "authorities" : [{
+          "authority": "ROLE_USER"
+        }]
       }
   auth: inherit
 
