@@ -1,6 +1,7 @@
 package com.simplon.tests.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.simplon.tests.entities.BookEntity;
@@ -8,6 +9,7 @@ import com.simplon.tests.services.BookService;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +42,7 @@ public class BookController {
 
     @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
     @PostMapping("/books")
+    @ResponseStatus(HttpStatus.CREATED)
     public BookEntity createBook(@RequestBody BookEntity book) throws Exception {
         return this.bookservice.save(book);
     }
