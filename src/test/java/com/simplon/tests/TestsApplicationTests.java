@@ -1,18 +1,15 @@
 package com.simplon.tests;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 // import org.springframework.data.web.JsonPath;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -30,7 +27,7 @@ class TestsApplicationTests {
 	@Autowired
 	private MockMvc mvc;
 
-	@MockitoBean
+	@Autowired
 	private UserRepository userRepository;
 
 	@Autowired
@@ -40,7 +37,7 @@ class TestsApplicationTests {
 	@Test
 	@WithMockUser(authorities = { "SCOPE_ROLE_USER" })
 	public void shouldGetBooks() throws Exception {
-		this.mvc.perform(get("/api/books")).andDo(print()).andExpect(status().isOk());
+		this.mvc.perform(get("/api/books")).andExpect(status().isOk());
 	}
 
 	// on vérifie qu'un utilisateur avec le role USER ne peut pas supprimer un livre
@@ -50,7 +47,7 @@ class TestsApplicationTests {
 		var mockId = "er45-e484f-ferf8r-rrefrt";
 		StringBuilder mockUrl = new StringBuilder();
 		mockUrl.append("/api/books/").append(mockId);
-		this.mvc.perform(delete(mockUrl.toString())).andDo(print()).andExpect(status().isForbidden());
+		this.mvc.perform(delete(mockUrl.toString())).andExpect(status().isForbidden());
 	}
 
 	// on vérifie qu'un utilisateur avec le role ADMIN peut créer un livre
@@ -69,7 +66,7 @@ class TestsApplicationTests {
 		this.mvc.perform(post("/api/books")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(bookItemJson))
-				.andDo(print()).andExpect(status().isOk());
+				.andDo(print()).andExpect(status().isCreated());
 	}
 
 	// on vérifie qu'un utilisateur avec le role ADMIN peut mettre à jour un livre
@@ -89,7 +86,7 @@ class TestsApplicationTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(bookItemJson))
 				.andDo(print())
-				.andExpect(status().isOk())
+				.andExpect(status().isCreated())
 				.andReturn();
 
 		String id = JsonPath.read(response.getResponse().getContentAsString(), "$.id");
@@ -126,7 +123,7 @@ class TestsApplicationTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(bookItemJson))
 				.andDo(print())
-				.andExpect(status().isOk())
+				.andExpect(status().isCreated())
 				.andReturn();
 
 		String id = JsonPath.read(response.getResponse().getContentAsString(), "$.id");
@@ -163,45 +160,31 @@ class TestsApplicationTests {
 
 		/*
 		 * le password ne devrais pas être retourner par la réponse, même hashé
-		 * du coup on passe par Argumentcaptor pour capturer l'utilisateur enregistré et
-		 * récupérer son password
-		 * grâce à userCaptor.capture(), Mockito "attrape au vol" l'intance de User qui
-		 * a été passée en paramètre à la méthode .save
+		 * du coup on passe directement par le repository ou le service
 		 */
-		ArgumentCaptor<UserEntity> userCaptor = ArgumentCaptor.forClass(UserEntity.class);
-		verify(this.userRepository).save(userCaptor.capture());
 
-		// on récupère ici l'utilisateur créé
-		UserEntity savedUser = userCaptor.getValue();
+		UserEntity savedUser = userRepository.findByEmail("chrisUser@simplon.co").orElseThrow();
 
-		// on vérifie ici que le password donnée lors de l'inscription ne soit pas le
-		// même que celui qui a été sauvegardé
-		// ce qui sous entend qu'il a bien été hashé
 		assertThat(savedUser.getPassword()).isNotEqualTo(password);
-
-		// mais pour aller plus loin,
-		// on vérifie ici que le password et le password
-		// hashé sont bien les mêmes
-		// via passwordEncoder
 		assertThat(this.passwordEncoder.matches(password, savedUser.getPassword())).isTrue();
 	}
 
 	@Test
 	public void shouldLogin() throws Exception {
 
-		// var email = "chrisUser2@simplon.co";
-		// var password = "password";
+		var email = "chrisUser2@simplon.co";
+		var password = "password";
 
 		var user = """
 				{
 				"name" : "chrisUser2",
-				"password": "password",
-				"email" : "chrisuser2@simplon.co",
+				"password": "%s",
+				"email" : "%s",
 				"authorities": [{
 					"authority": "ROLE_USER"
 				}]
 				}
-				""";
+				""".formatted(password, email);
 
 		this.mvc.perform(post("/api/auth/register")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -212,15 +195,53 @@ class TestsApplicationTests {
 
 		var userCreated = """
 				{
-				"password" : "password",
-				"email" : "chrisuser2@simplon.co"
+				"password" : "%s",
+				"email" : "%s"
 				}
-				""";
+				""".formatted(password, email);
 
 		this.mvc.perform(post("/api/auth/login")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(userCreated))
 				.andDo(print())
 				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void shouldNotLogin() throws Exception {
+
+		var email = "chrisUser3@simplon.co";
+		var password = "password";
+
+		var user = """
+				{
+				"name" : "chrisUser3",
+				"password": "%s",
+				"email" : "%s",
+				"authorities": [{
+					"authority": "ROLE_USER"
+				}]
+				}
+				""".formatted(password, email);
+
+		this.mvc.perform(post("/api/auth/register")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(user))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andReturn();
+
+		var badUser = """
+				{
+				"password" : "badpassword",
+				"email" : "%s"
+				}
+				""".formatted(password, email);
+
+		this.mvc.perform(post("/api/auth/login")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(badUser))
+				.andDo(print())
+				.andExpect(status().isUnauthorized());
 	}
 }
