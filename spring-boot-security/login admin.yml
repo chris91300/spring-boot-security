@@ -1,7 +1,6 @@
 info:
-  name: POST login
+  name: login admin
   type: http
-  seq: 1
 
 http:
   method: POST
@@ -10,8 +9,8 @@ http:
     type: json
     data: |-
       {
-        "email": "christophe.user@simplon.co",
-        "password": "motdepasse"
+        "email": "chrisadmin@simplon.co",
+        "password": "password"
       }
   auth: inherit
 

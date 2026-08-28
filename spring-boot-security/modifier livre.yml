@@ -1,0 +1,22 @@
+info:
+  name: modifier livre
+  type: http
+
+http:
+  method: PUT
+  url: http://localhost:8080/api/books/609cbc5e-2e2d-4174-845b-5e5728dd1d87
+  body:
+    type: json
+    data: |-
+      {
+        "name": "La bible modifiée"
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoiY2hyaXNhZG1pbkBzaW1wbG9uLmNvIiwiZXhwIjoxNzg3ODQ1MTk3LCJpYXQiOjE3ODc4NDE1OTcsInNjb3BlIjoiUk9MRV9BRE1JTiBGQUNUT1JfUEFTU1dPUkQifQ.Ovtb55c42KYRGfNW4-Yc2Q14D5WtBo4EQA1we3V5k2E
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

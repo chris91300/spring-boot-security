@@ -1,14 +1,10 @@
 package com.simplon.tests.services;
 
 import java.util.Optional;
-
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.simplon.tests.entities.UserEntity;
 import com.simplon.tests.repositories.UserRepository;
 

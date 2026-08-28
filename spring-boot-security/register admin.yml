@@ -1,5 +1,5 @@
 info:
-  name: register user
+  name: register admin
   type: http
 
 http:
@@ -9,11 +9,11 @@ http:
     type: json
     data: |-
       {
-        "name" : "christophe",
-        "email" : "christophe.user@simplon.co",
-        "password" : "motdepasse",
-        "authorities" : [{
-          "authority": "ROLE_USER"
+        "name" : "chrisadmin",
+        "password": "password",
+        "email" : "chrisadmin@simplon.co",
+        "authorities": [{
+          "authority": "ROLE_ADMIN"
         }]
       }
   auth: inherit
